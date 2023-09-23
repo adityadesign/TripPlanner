@@ -17,6 +17,7 @@ import {
   View,
 } from 'react-native';
 import Login from './screens/Login';
+import Home from './screens/Home';
 
 const Stack = createNativeStackNavigator()
 
@@ -25,6 +26,7 @@ function App(): JSX.Element {
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Login'>
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}}/>
+        <Stack.Screen name='Home' component={Home}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

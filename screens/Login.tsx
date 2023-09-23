@@ -18,24 +18,27 @@ import {
 //import { initializeAuth, getReactNativePersistence } from 'firebase/auth'
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = () => {
+const Login = ({navigation}:any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [toggleBtn, setToggleBtn] = useState(true);
   const [passwordMatch, setPasswordMatch] = useState(true)
-  const [error, setError] = useState('')
+  const [error, setError] = useState(false)
   const auth = FIREBASE_AUTH;
 
   //Function for User Login
   const signIn = async () => {
     setLoading(true);
+    setError(false)
     try {
       const response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response);
+      navigation.navigate('Home')
     } catch (err) {
       console.log(err);
+      setError(true)
     } finally {
       setLoading(false);
     }
@@ -45,6 +48,7 @@ const Login = () => {
   const signUp = async () => {
     setLoading(true);
     setPasswordMatch(true)
+    setError(false)
     if (password === confirmPassword) {
       try {
         const response = await createUserWithEmailAndPassword(
@@ -53,9 +57,9 @@ const Login = () => {
           password,
         );
         console.log(response);
-      } catch (err:any) {
-        console.log(err.message);
-        setError(err.message)
+      } catch (err) {
+        console.log(err)
+        setError(true)
       } finally {
         setLoading(false);
       }
@@ -133,7 +137,8 @@ const Login = () => {
                 secureTextEntry={true}
                 onChangeText={text => setConfirmPassword(text)}></TextInput>
             )}
-            {!passwordMatch && <Text>Password does not matches{error}</Text>}
+            {!passwordMatch && <Text style={styles.errText}>Password does not matches*</Text>}
+            {error && <Text style={styles.errText}>Enter the details properly*</Text>}
           </View>
 
           {loading ? (
@@ -185,7 +190,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   btn: {
-    paddingVertical: 12,
+    paddingVertical: 10,
     flex: 1,
   },
   btnText: {
@@ -212,8 +217,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fe4b44',
     borderRadius: 10,
     marginTop: 15,
-    padding: 12,
+    padding: 10,
   },
+  errText:{
+    color: 'red',
+    fontWeight: '500'
+  }
 });
 
 export default Login;
